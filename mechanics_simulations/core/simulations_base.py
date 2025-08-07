@@ -9,10 +9,9 @@ class Simulation(ABC):
     '''
         A simulator class
     '''
-    def __init__(self, object, propagator):
+    def __init__(self, propagator):
         
         # initializing the simulation
-        self.object = object
         self._propagator = propagator
         
     def run_simulation(self, simulation_time: float|int, timestep: float):

@@ -9,9 +9,9 @@ from mechanics_simulations import RK4Integrator
 class PendulumSimulation(Simulation):
     '''A subclass of the simulator class'''
     
-    def __init__(self, object: Pendulum, propagator):
-        super().__init__(object=object, propagator=propagator)
-        self.object: Pendulum = object
+    def __init__(self, pendulum: Pendulum, propagator):
+        super().__init__(propagator=propagator)
+        self.object: Pendulum = pendulum
 
     def get_initial_state(self):
         '''Returns the initial state of the double pendulum'''
@@ -43,9 +43,9 @@ class PendulumSimulation(Simulation):
 class DoublePendulumSimulation(Simulation):
     '''A subclass of the simulation class'''
     
-    def __init__(self, object: DoublePendulum, propagator):
-        super().__init__(object=object, propagator=propagator)
-        self.object: DoublePendulum = object
+    def __init__(self, double_pendulum: DoublePendulum, propagator):
+        super().__init__(propagator=propagator)
+        self.object = double_pendulum
 
     def get_initial_state(self):
         '''Returns the initial state of the double pendulum'''

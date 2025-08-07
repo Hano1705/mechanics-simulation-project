@@ -16,8 +16,7 @@ def _animate_pendulum():
     
     rk_solver = RK4Integrator()
 
-    my_simulation = PendulumSimulation(object=pendulum
-                                       , propagator=rk_solver.propagate_state)
+    my_simulation = PendulumSimulation(pendulum=pendulum, propagator=rk_solver.propagate_state)
     my_simulation.run_simulation(simulation_time=10, timestep=0.01)
     print('finished simulation')
     my_animation = PendulumAnimation(simulation = my_simulation)
@@ -36,8 +35,7 @@ def _animate_double_pendulum():
     
     rk_solver = RK4Integrator()
 
-    my_simulation = DoublePendulumSimulation(object=double_pendulum
-                                        , propagator=rk_solver.propagate_state)
+    my_simulation = DoublePendulumSimulation(double_pendulum=double_pendulum, propagator=rk_solver.propagate_state)
     my_simulation.run_simulation(simulation_time=10, timestep=0.01)
     my_simulation.calculate_cartesian_coordinates()
     print('finished simulation')
