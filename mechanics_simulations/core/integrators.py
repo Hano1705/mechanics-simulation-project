@@ -4,7 +4,7 @@
 import numpy as np
 from types import FunctionType
 
-class RungeKuttaIntegrator():
+class RK4Integrator():
     '''
         A class of RK integrators to propagate newtonian particles
     '''

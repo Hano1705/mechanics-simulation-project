@@ -1,6 +1,6 @@
 import numpy as np
 
-from mechanics_simulations.core.integrators import RungeKuttaIntegrator
+from mechanics_simulations.core.integrators import RK4Integrator
 from mechanics_simulations.double_pendulum.pendulum_objects import Pendulum
 from mechanics_simulations.double_pendulum.pendulum_objects import DoublePendulum
 from mechanics_simulations.double_pendulum.double_pendulum_simulations import PendulumSimulation
@@ -14,7 +14,7 @@ def _animate_pendulum():
     pendulum.set_pendulum(theta=np.pi/2, w=0)
     print("pendulum instantiated")
     
-    rk_solver = RungeKuttaIntegrator()
+    rk_solver = RK4Integrator()
 
     my_simulation = PendulumSimulation(object=pendulum
                                        , propagator=rk_solver.propagate_state)
@@ -34,7 +34,7 @@ def _animate_double_pendulum():
                                        theta2=-np.pi/3, w2=0)
     print("double pendulum instantiated")
     
-    rk_solver = RungeKuttaIntegrator()
+    rk_solver = RK4Integrator()
 
     my_simulation = DoublePendulumSimulation(object=double_pendulum
                                         , propagator=rk_solver.propagate_state)

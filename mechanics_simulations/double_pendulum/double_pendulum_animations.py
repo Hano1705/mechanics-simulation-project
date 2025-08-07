@@ -4,7 +4,7 @@ import numpy as np
 
 from matplotlib import animation
 
-from mechanics_simulations.core.animation_base import Animation
+from mechanics_simulations import Animation
 
 from mechanics_simulations.double_pendulum.pendulum_objects import Pendulum
 from mechanics_simulations.double_pendulum.pendulum_objects import DoublePendulum

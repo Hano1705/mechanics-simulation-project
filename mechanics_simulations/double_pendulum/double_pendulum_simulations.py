@@ -3,8 +3,8 @@ import numpy as np
 from mechanics_simulations.double_pendulum.pendulum_objects import Pendulum
 from mechanics_simulations.double_pendulum.pendulum_objects import DoublePendulum
 
-from mechanics_simulations.core.simulations_base import Simulation 
-from mechanics_simulations.core.integrators import RungeKuttaIntegrator
+from mechanics_simulations import Simulation 
+from mechanics_simulations import RK4Integrator
 
 class PendulumSimulation(Simulation):
     '''A subclass of the simulator class'''
