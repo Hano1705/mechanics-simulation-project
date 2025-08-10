@@ -33,7 +33,6 @@ def run_sun_sun_sim():
     integrator = RK4Integrator()
 
     rescale_factor_units = (4 * np.pi**2) / G.value
-    #rescale_factor_units = 1 / 4 * np.pi**2 / M_sun.value * au.value / (365.25 * 24 * 60 * 60)
 
     sim = TwoBodySimulation([sun1, sun2], propagator = integrator.propagate_state, scalefactor_G=rescale_factor_units)
     sim.run_simulation(simulation_time=1, timestep=0.001)
