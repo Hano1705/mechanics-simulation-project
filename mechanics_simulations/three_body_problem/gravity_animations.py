@@ -1,13 +1,16 @@
 import numpy as np
+import matplotlib as plt
 import seaborn; seaborn.set_theme()
 
 from mechanics_simulations import Animation
 from mechanics_simulations.three_body_problem.gravity_simulations import TwoBodySimulation
+from mechanics_simulations.three_body_problem.gravity_simulations import NBodySimulation
 
 from mechanics_simulations import Simulation
 from mechanics_simulations import RK4Integrator
 
 from mechanics_simulations.three_body_problem.gravitational_object import GravitationalObject
+from mechanics_simulations.three_body_problem.gravitational_object import CelestialSystem
 
 class TwoBodyAnimation(Animation):
 
@@ -17,7 +20,7 @@ class TwoBodyAnimation(Animation):
 
     def initialize_animation(self):
         '''
-            Initializes the animation of the projectile
+            Initializes the animation
         '''
         # simulation time
         self._t = self._simulation.time
@@ -46,7 +49,7 @@ class TwoBodyAnimation(Animation):
             -----------
             frame: the present frame
         '''
-        # update the pendulum plot
+        # update the plot
         self._object1_artist.set_offsets(np.array([self._x1[frame], self._y1[frame]]))
         self._object2_artist.set_offsets(np.array([self._x2[frame], self._y2[frame]]))
 
@@ -59,3 +62,50 @@ class TwoBodyAnimation(Animation):
 
         return (self._object1_artist, self._object2_artist, self._trace1_artist, self._trace2_artist)
     
+class NBodyAnimation(Animation):
+
+    def __init__(self, simulation: NBodySimulation):
+        super().__init__(simulation=simulation)
+        self._simulation = simulation
+
+    def initialize_animation(self):
+        '''
+            Initializes the animation
+        '''
+        # simulation time
+        self._t = self._simulation.time
+        # coordinates
+        self._positions, self._velocities = np.transpose(self._simulation.state, axes=[3,0,1,2])
+        
+        self._ax.set_xlim(left = -6, right = 6)
+        self._ax.set_ylim(bottom = -6, top = 6)
+
+        # set ax as square
+        self._ax.set_aspect('equal', adjustable='box')
+
+        self._point_artists = {}
+        self._trace_artists = {}
+
+        for it, name in enumerate(self._simulation.system.keys()):
+            self._point_artists[name] = self._ax.scatter(x=self._positions[0,it,0], y=self._positions[0,it,1])     
+            self._trace_artists[name], = self._ax.plot(self._positions[0,it,0], self._positions[0,it,1])
+            
+
+    def _update_frame(self, frame):
+        for it, name in enumerate(self._simulation.system.keys()):
+            self._point_artists[name].set_offsets(self._positions[frame, it,:])
+            self._trace_artists[name].set_xdata(self._positions[:frame,it,0])
+            self._trace_artists[name].set_ydata(self._positions[:frame,it,1])
+        
+        return (self._point_artists.values(), self._trace_artists.values())
+            
+
+if __name__ == '__main__':
+    system = CelestialSystem.solar_system()
+    RK4solver = RK4Integrator().propagate_state
+    sim = NBodySimulation(system=system.celestial_objects, propagator=RK4solver)
+    sim.run_simulation(simulation_time=10, timestep=0.005)
+    print('breakpoint')
+    animation = NBodyAnimation(simulation=sim)
+    animation.show_animation(interval_frames=20, repeat_delay=1000)
+    print('breakpoint')

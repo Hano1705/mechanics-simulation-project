@@ -60,7 +60,6 @@ class NBodySimulation(Simulation):
             Parameters:
             objects: list of gravitational objects in simulation
             propagator: integrator
-            scalefactor_G: a refactoring scale, to choose units in the simulation. Default: G in SI-units.
         '''
 
         super().__init__(propagator=propagator)
@@ -106,8 +105,9 @@ class NBodySimulation(Simulation):
         return np.transpose(np.array([pos_derivatives,vel_derivatives]), (1,2,0))
             
 
-system = CelestialSystem.solar_system()
-RK4solver = RK4Integrator().propagate_state
-sim = NBodySimulation(system=system.celestial_objects, propagator=RK4solver)
-sim.run_simulation(simulation_time=2, timestep=0.01)
-print('breakpoint')
+if __name__ == '__main__':
+    system = CelestialSystem.solar_system()
+    RK4solver = RK4Integrator().propagate_state
+    sim = NBodySimulation(system=system.celestial_objects, propagator=RK4solver)
+    sim.run_simulation(simulation_time=2, timestep=0.01)
+    print('breakpoint')
