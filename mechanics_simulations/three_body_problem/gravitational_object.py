@@ -32,6 +32,10 @@ class CelestialSystem():
 
         return self.celestial_objects[name]
     
+    def get_system(self):
+
+        return self.celestial_objects
+
     @classmethod
     def solar_system(cls):
         return cls(name='Solar System', celestial_objects={
@@ -42,6 +46,4 @@ class CelestialSystem():
         , 'Mars': GravitationalObject(mass=0.1075*M_earth/M_sun, position=[1.52, 0], velocity=[0, 1.52*2*np.pi/1.881])
         , 'Jupiter': GravitationalObject(mass=317.8*M_earth/M_sun, position=[5.2, 0], velocity=[0, 5.2*2*np.pi/11.86])
         })
-
-sol = CelestialSystem.solar_system()
-print("created the solar system")
+        print('Created the solar system')

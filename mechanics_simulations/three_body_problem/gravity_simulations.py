@@ -83,9 +83,9 @@ class NBodySimulation(Simulation):
     
     def compute_derivatives(self, state):
         
-        positions, velocities = np.transpose(state, (2,0,1))
+        positions, velocities = np.transpose(state, (1,0,2))
         
-        displacements = positions[:, np.newaxis] - positions
+        displacements = positions - positions[:, np.newaxis]
         mass_weighted_displacements = self.masses[:,np.newaxis] * displacements
 
         mask = ~np.eye(displacements.shape[0],dtype=bool)[:,:,np.newaxis] * np.ones(displacements.shape, dtype=bool)
@@ -96,13 +96,13 @@ class NBodySimulation(Simulation):
         
 
 
-        temp = - self.gravitational_constant * (1 / distances **3)[:,:,np.newaxis] * mass_weighted_displacements
+        temp = self.gravitational_constant * (1 / distances **3)[:,:,np.newaxis] * mass_weighted_displacements
         temp = np.sum(temp, axis=1)
 
 
         pos_derivatives = velocities
         vel_derivatives = temp
-        return np.transpose(np.array([pos_derivatives,vel_derivatives]), (1,2,0))
+        return np.transpose(np.array([pos_derivatives,vel_derivatives]), (1,0,2))
             
 
 if __name__ == '__main__':

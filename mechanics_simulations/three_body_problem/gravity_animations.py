@@ -75,7 +75,7 @@ class NBodyAnimation(Animation):
         # simulation time
         self._t = self._simulation.time
         # coordinates
-        self._positions, self._velocities = np.transpose(self._simulation.state, axes=[3,0,1,2])
+        self._positions, self._velocities = np.transpose(self._simulation.state, axes=[2,0,1,3])
         
         self._ax.set_xlim(left = -6, right = 6)
         self._ax.set_ylim(bottom = -6, top = 6)
@@ -83,12 +83,24 @@ class NBodyAnimation(Animation):
         # set ax as square
         self._ax.set_aspect('equal', adjustable='box')
 
+        # set axes labels
+        self._ax.set_xlabel('x (AU)')
+        self._ax.set_ylabel('y (AU)')
+
         self._point_artists = {}
         self._trace_artists = {}
 
         for it, name in enumerate(self._simulation.system.keys()):
-            self._point_artists[name] = self._ax.scatter(x=self._positions[0,it,0], y=self._positions[0,it,1])     
-            self._trace_artists[name], = self._ax.plot(self._positions[0,it,0], self._positions[0,it,1])
+            x_position = self._positions[0,it,0]
+            y_position = self._positions[0,it,1]
+
+            self._point_artists[name] = self._ax.scatter(x=x_position, y=y_position, label=name)     
+            self._trace_artists[name], = self._ax.plot(x_position, y_position, alpha=0.4, linewidth=1)
+        
+        self._text_artist = self._ax.text(0.1, 0.9, s=f"t = {self._t[0]:.1f} yr"
+                              , transform=self._ax.transAxes
+                              , bbox={'facecolor':'green','alpha':0.2})
+        self._ax.legend(bbox_to_anchor=(1.3, 1))
             
 
     def _update_frame(self, frame):
@@ -97,15 +109,17 @@ class NBodyAnimation(Animation):
             self._trace_artists[name].set_xdata(self._positions[:frame,it,0])
             self._trace_artists[name].set_ydata(self._positions[:frame,it,1])
         
-        return (self._point_artists.values(), self._trace_artists.values())
+        self._text_artist.set_text(s=f"t = {self._t[frame]:.1f} yr")
+        #return (self._point_artists.values(), self._trace_artists.values())
             
 
 if __name__ == '__main__':
     system = CelestialSystem.solar_system()
     RK4solver = RK4Integrator().propagate_state
     sim = NBodySimulation(system=system.celestial_objects, propagator=RK4solver)
-    sim.run_simulation(simulation_time=10, timestep=0.005)
-    print('breakpoint')
+    sim.run_simulation(simulation_time=100, timestep=0.01)
+    print('Simulation done')
     animation = NBodyAnimation(simulation=sim)
+    print('Showing animation')
     animation.show_animation(interval_frames=20, repeat_delay=1000)
-    print('breakpoint')
+    print('Animation closed')
