@@ -1,4 +1,5 @@
 import numpy as np
+from numba import jit
 from scipy.constants import G
 
 from mechanics_simulations import Simulation
@@ -55,59 +56,65 @@ class NBodySimulation(Simulation):
 
     def __init__(self, system: dict[str,GravitationalObject], propagator):
         '''
-            Initialize the N-body simulation
+            Initialize the N-body simulation.
 
             Parameters:
             objects: list of gravitational objects in simulation
             propagator: integrator
         '''
-
         super().__init__(propagator=propagator)
 
         self.system = system
 
+        # set .masses as numpy array of masses in the system
         _temp_list= []
         for name, cel_object in self.system.items():
             _temp_list.append(cel_object.mass)
         self.masses = np.array(_temp_list, dtype=np.float32)
 
-        self.gravitational_constant = (4 * np.pi**2)
+        self.gravitational_constant = (4 * np.pi**2) # units of AU = 1, yr = 1
 
     def get_initial_state(self):
+        '''
+            returns the initial state of the system as a np.array with dimension
+            (N, 2, 2) corresponding to N objects, 2 types of properties (positon/velocity)
+            and 2 coordinates.
 
+        '''
         _temp_list = []
         for name, cel_object in self.system.items():
             _temp_list.append([cel_object.position, cel_object.velocity])
 
-        return np.array(_temp_list, dtype=np.float32) # object, pos, vel
+        return np.array(_temp_list, dtype=np.float32) # object, property, coordinate
     
-    def compute_derivatives(self, state):
-        
+
+    def compute_derivatives(self, state: np.ndarray):
+        '''
+            computes the derivatives of the current state and returns it as np.array with
+            dimension (N, 2, 2) corresponding to the get_initial_state method.
+        '''
+        # unpack position and velocity arrays
         positions, velocities = np.transpose(state, (1,0,2))
         
+        # calculate r between objects
         displacements = positions - positions[:, np.newaxis]
+        # calculate mass weighted r between objects
         mass_weighted_displacements = self.masses[:,np.newaxis] * displacements
-
-        mask = ~np.eye(displacements.shape[0],dtype=bool)[:,:,np.newaxis] * np.ones(displacements.shape, dtype=bool)
-        mass_weighted_displacements = mass_weighted_displacements[mask].reshape((displacements.shape[0],displacements.shape[1]-1,displacements.shape[2]))
-        displacements = displacements[mask].reshape((displacements.shape[0],displacements.shape[1]-1,displacements.shape[2]))
         
+        # create mask to remove "diagonal" entries: (N,N,2) -> (N,N-1,2)
+        shp = displacements.shape
+        mask = ~np.eye(shp[0],dtype=bool)[:,:,np.newaxis] * np.ones(shp, dtype=bool)
+        mass_weighted_displacements = mass_weighted_displacements[mask].reshape((shp[0],shp[1]-1,shp[2]))
+        displacements = displacements[mask].reshape((shp[0],shp[1]-1,shp[2]))
+        
+        # calculate distances between objects
         distances = np.sqrt( np.sum( np.square(displacements), axis=2))
-        
 
-
-        temp = self.gravitational_constant * (1 / distances **3)[:,:,np.newaxis] * mass_weighted_displacements
-        temp = np.sum(temp, axis=1)
-
+        # calculate F/m contribution from each object to each object
+        force_over_mass = self.gravitational_constant * (1 / distances **3)[:,:,np.newaxis] * mass_weighted_displacements
 
         pos_derivatives = velocities
-        vel_derivatives = temp
-        return np.transpose(np.array([pos_derivatives,vel_derivatives]), (1,0,2))
-            
+        vel_derivatives = np.sum(force_over_mass, axis=1)
 
-if __name__ == '__main__':
-    system = CelestialSystem.solar_system()
-    RK4solver = RK4Integrator().propagate_state
-    sim = NBodySimulation(system=system.celestial_objects, propagator=RK4solver)
-    sim.run_simulation(simulation_time=2, timestep=0.01)
-    print('breakpoint')
+        # return numpy array in same format as original state
+        return np.transpose(np.array([pos_derivatives,vel_derivatives]), (1,0,2))

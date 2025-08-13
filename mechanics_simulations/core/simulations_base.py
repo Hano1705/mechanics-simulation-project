@@ -4,6 +4,7 @@
 
 import numpy as np
 from abc import ABC, abstractmethod
+from codetiming import Timer
 
 class Simulation(ABC):
     '''
@@ -13,13 +14,15 @@ class Simulation(ABC):
         
         # initializing the simulation
         self._propagator = propagator
-        
+    
+    @Timer(name='decorator', text= "Simulation elapsed time: {:.4f} seconds")
     def run_simulation(self, simulation_time: float|int, timestep: float):
         '''Runs simulation'''
         # local variables for simulation
         time_list = [0]
         state_list = [self.get_initial_state()]
 
+        print("Running simulation")
         while time_list[-1] < simulation_time:
             # update time and state
             time, state = self._propagator(rhs_func=self.compute_derivatives
@@ -30,6 +33,7 @@ class Simulation(ABC):
             time_list.append(time)
             state_list.append(state)
         
+        print("Finished simulation")
         self.time = np.array(time_list)
         self.state = np.array(state_list)
 
