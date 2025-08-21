@@ -25,8 +25,8 @@ def run_solar_system_sim():
 # under development
 def run_unstable_three_body_sim():
     object1 = GravitationalObject(mass=1, position=[0,0], velocity=[-12*0.5,-12*0.5])
-    object2 = GravitationalObject(mass=1, position=[-1,0], velocity=[3*0.53,6*0.35])
-    object3 = GravitationalObject(mass=1, position=[1,0], velocity=[3*0.35,3*0.53])
+    object2 = GravitationalObject(mass=1, position=[-1.4,0], velocity=[3*0.53,6*0.35])
+    object3 = GravitationalObject(mass=1, position=[1.4,0], velocity=[3*0.35,3*0.53])
 
     figure_eight_system = CelestialSystem(name="Figure Eight", celestial_objects={
         'object1': object1
@@ -37,8 +37,7 @@ def run_unstable_three_body_sim():
     integrator = RK4Integrator()
 
     sim = NBodySimulation(figure_eight_system.get_system(), propagator = integrator.propagate_state)
-    sim.run_simulation(simulation_time=5, timestep=0.01)
-    print('done')
+    sim.run_simulation(simulation_time=20, timestep=0.01)
 
     anim = NBodyAnimation(simulation=sim)
     anim.show_animation(interval_frames=20, repeat_delay=1000)

@@ -26,15 +26,17 @@ class NBodyAnimation(Animation):
         # coordinates
         self._positions, self._velocities = np.transpose(self._simulation.state, axes=[2,0,1,3])
         
-        self._ax.set_xlim(left = -6, right = 6)
-        self._ax.set_ylim(bottom = -6, top = 6)
-
         # set ax as square
         self._ax.set_aspect('equal', adjustable='box')
 
         # set axes labels
         self._ax.set_xlabel('x (AU)')
         self._ax.set_ylabel('y (AU)')
+
+        # set axes
+        origin = np.sum(self._simulation.masses[:,np.newaxis]*self._positions[0,:,:], axis=0) / np.sum(self._simulation.masses)
+        self._ax.set_xlim(-6 + origin[0], 6 + origin[0])
+        self._ax.set_ylim(-6 + origin[1], 6 + origin[1])
 
         self._point_artists = {}
         self._trace_artists = {}
@@ -59,4 +61,9 @@ class NBodyAnimation(Animation):
             self._trace_artists[name].set_ydata(self._positions[:frame,it,1])
         
         self._text_artist.set_text(s=f"t = {self._t[frame]:.1f} yr")
+
+         # set axes
+        origin = np.sum(self._simulation.masses[:,np.newaxis]*self._positions[frame,:,:], axis=0) / np.sum(self._simulation.masses)
+        self._ax.set_xlim(-6 + origin[0], 6 + origin[0])
+        self._ax.set_ylim(-6 + origin[1], 6 + origin[1])
             
