@@ -13,7 +13,7 @@ class NBodySimulation(Simulation):
         N-body simulation class. Takes a dictionary of GravitationalObjects and a propagator,
         and runs the evolution of the system of GravitationalObjects for a given amount of time.
     '''
-    def __init__(self, system: dict[str,GravitationalObject], propagator):
+    def __init__(self, system: CelestialSystem, propagator):
         '''
             Initialize the N-body simulation.
 
@@ -23,9 +23,9 @@ class NBodySimulation(Simulation):
         '''
         super().__init__(propagator=propagator)
 
-        self.system = system
-        self.masses = np.fromiter((cel_object.mass for cel_object in system.values()), dtype=np.float32)
-        self.gravitational_constant = (4 * np.pi**2) # units of AU = 1, yr = 1
+        self.system = system.get_system()
+        self.masses = np.fromiter((cel_object.mass for cel_object in self.system.values()), dtype=np.float32)
+        self.gravitational_constant = system.gravitational_constant # units of AU = 1, yr = 1
 
     def _get_initial_state(self):
         '''

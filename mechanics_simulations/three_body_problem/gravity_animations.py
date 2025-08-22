@@ -34,8 +34,10 @@ class NBodyAnimation(Animation):
 
         # set axes
         center_of_mass = np.sum(self._simulation.masses[:,np.newaxis]*self._positions[0,:,:], axis=0) / np.sum(self._simulation.masses)
-        self._ax.set_xlim(-6 + center_of_mass[0], 6 + center_of_mass[0])
-        self._ax.set_ylim(-6 + center_of_mass[1], 6 + center_of_mass[1])
+        width = np.max(np.abs(self._positions[0,:,:]))
+
+        self._ax.set_xlim(-width*1.5 + center_of_mass[0], width*1.5 + center_of_mass[0])
+        self._ax.set_ylim(-width*1.5 + center_of_mass[1], width*1.5 + center_of_mass[1])
 
         self._point_artists = {}
         self._trace_artists = {}
@@ -62,7 +64,9 @@ class NBodyAnimation(Animation):
         self._text_artist.set_text(s=f"t = {self._t[frame]:.1f} yr")
 
          # set axes
-        origin = np.sum(self._simulation.masses[:,np.newaxis]*self._positions[frame,:,:], axis=0) / np.sum(self._simulation.masses)
-        self._ax.set_xlim(-6 + origin[0], 6 + origin[0])
-        self._ax.set_ylim(-6 + origin[1], 6 + origin[1])
+        center_of_mass = np.sum(self._simulation.masses[:,np.newaxis]*self._positions[frame,:,:], axis=0) / np.sum(self._simulation.masses)
+        width = np.max(np.abs(self._positions[0,:,:]))
+
+        self._ax.set_xlim(-width*1.5 + center_of_mass[0], width*1.5 + center_of_mass[0])
+        self._ax.set_ylim(-width*1.5 + center_of_mass[1], width*1.5 + center_of_mass[1])
             

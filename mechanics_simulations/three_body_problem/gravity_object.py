@@ -16,12 +16,13 @@ class CelestialSystem():
     '''
         A Celestial system, consisting of a set of GravitationalObjects
     '''
-    def __init__(self, name, celestial_objects: dict[str, GravitationalObject]|None = None):
+    def __init__(self, name, celestial_objects: dict[str, GravitationalObject]|None = None, gravitational_constant = 4*np.pi**2):
         '''
             Name of system and a dict of each object
         '''
         self.name = name
         self.celestial_objects = {} if celestial_objects is None else celestial_objects
+        self.gravitational_constant = gravitational_constant
 
     def add_object(self, name, object):
         ''' Adds a GravitationalObject to the system '''
@@ -54,7 +55,7 @@ class CelestialSystem():
             , 'Earth': GravitationalObject(mass=M_earth/M_sun, position=[1, 0], velocity=[0, 2*np.pi])
             , 'Mars': GravitationalObject(mass=0.1075*M_earth/M_sun, position=[1.52, 0], velocity=[0, 1.52*2*np.pi/1.881])
             , 'Jupiter': GravitationalObject(mass=317.8*M_earth/M_sun, position=[5.2, 0], velocity=[0, 5.2*2*np.pi/11.86])
-        })
+            }, gravitational_constant = 4*np.pi**2)
         print('Created the solar system')
     
     @classmethod
@@ -66,4 +67,19 @@ class CelestialSystem():
         object2 = GravitationalObject(mass=1, position=[-1.4,0], velocity=[3*0.53,6*0.35])
         object3 = GravitationalObject(mass=1, position=[1.4,0], velocity=[3*0.35,3*0.53])
 
-        return cls(name='Chaotic three body system', celestial_objects={'object1': object1,'object2': object2,'object3': object3})
+        return cls(name='Chaotic three body system'
+                   , celestial_objects={'object1': object1,'object2': object2,'object3': object3}
+                   , gravitational_constant = 4*np.pi**2)
+    
+    @classmethod
+    def figure_eight_system(cls):
+        '''
+            Creates a stable figure eight system
+        '''
+        object1 = GravitationalObject(mass=1, position=[0.97000436, -0.24308753], velocity=[0.4662036850,0.4323657300])
+        object2 = GravitationalObject(mass=1, position=[-0.97000436, 0.24308753], velocity=[0.4662036850,0.4323657300])
+        object3 = GravitationalObject(mass=1, position=[0,0], velocity=[-0.93240737,-0.86473146])
+
+        return cls(name='Figure Eight'
+                   , celestial_objects={'object1':object1,'object2':object2,'object3':object3}
+                   , gravitational_constant = 1)
