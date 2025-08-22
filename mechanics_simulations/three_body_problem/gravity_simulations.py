@@ -5,7 +5,7 @@ from scipy.constants import G
 from mechanics_simulations import Simulation
 from mechanics_simulations import RK4Integrator
 
-from mechanics_simulations.three_body_problem.gravitational_object import GravitationalObject, CelestialSystem
+from mechanics_simulations.three_body_problem.gravity_object import GravitationalObject, CelestialSystem
 from mechanics_simulations.utils.math_helpers import calculate_distance
 # -----------------------------------------------------------------------    
 class NBodySimulation(Simulation):

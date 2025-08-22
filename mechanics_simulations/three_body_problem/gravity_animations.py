@@ -8,8 +8,7 @@ from mechanics_simulations import RK4Integrator
 
 from mechanics_simulations.three_body_problem.gravity_simulations import NBodySimulation
 
-from mechanics_simulations.three_body_problem.gravitational_object import GravitationalObject
-from mechanics_simulations.three_body_problem.gravitational_object import CelestialSystem
+from mechanics_simulations.three_body_problem.gravity_object import GravitationalObject, CelestialSystem
 # ----------------------------------------------------------------------------------------   
 class NBodyAnimation(Animation):
 

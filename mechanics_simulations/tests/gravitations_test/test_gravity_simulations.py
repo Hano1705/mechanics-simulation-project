@@ -4,8 +4,7 @@ from astropy.constants import M_sun, M_earth # type:ignore
 
 from mechanics_simulations import RK4Integrator
 
-from mechanics_simulations.three_body_problem.gravitational_object import GravitationalObject
-from mechanics_simulations.three_body_problem.gravitational_object import CelestialSystem
+from mechanics_simulations.three_body_problem.gravity_object import GravitationalObject, CelestialSystem
 from mechanics_simulations.three_body_problem.gravity_simulations import  NBodySimulation
 
 class TestGravitySimulationInit(unittest.TestCase):
