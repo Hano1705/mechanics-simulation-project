@@ -19,7 +19,7 @@ class PendulumAnimation(Animation):
         super().__init__(simulation=simulation)
         self._simulation = simulation
     
-    def initialize_animation(self):
+    def _initialize_animation(self):
         '''
             Initializes the animation of the pendulum
         '''
@@ -84,7 +84,7 @@ class DoublePendulumAnimation(Animation):
         super().__init__(simulation=simulation)
         self._simulation = simulation
 
-    def initialize_animation(self):
+    def _initialize_animation(self):
         '''
             Initializes the animation of the projectile
         '''

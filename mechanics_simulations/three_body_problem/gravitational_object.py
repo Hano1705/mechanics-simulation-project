@@ -6,7 +6,6 @@ from astropy.constants import M_sun, M_earth # type:ignore
 
 class GravitationalObject():
     '''A single graviational object'''
-
     def __init__(self, mass: float, position: list, velocity: list):
         self.mass = mass
         self.position = position # [x, y]
@@ -14,30 +13,40 @@ class GravitationalObject():
 
 
 class CelestialSystem():
-
+    '''
+        A Celestial system, consisting of a set of GravitationalObjects
+    '''
     def __init__(self, name, celestial_objects: dict[str, GravitationalObject]|None = None):
-
+        '''
+            Name of system and a dict of each object
+        '''
         self.name = name
         self.celestial_objects = {} if celestial_objects is None else celestial_objects
 
     def add_object(self, name, object):
-
+        ''' Adds a GravitationalObject to the system '''
         self.celestial_objects[name] = object
 
     def remove_object(self, name):
-
+        ''' Removes a GravitationalObject of the system'''
         self.celestial_objects.pop(name, None)
 
     def get_object(self,name):
+        ''' Returns object with input name '''
 
+        if name not in self.celestial_objects:
+            raise ValueError(f"Object name not in system: {name}")
         return self.celestial_objects[name]
     
     def get_system(self):
-
+        ''' Returns the dict of the Celestial System '''
         return self.celestial_objects
 
     @classmethod
     def solar_system(cls):
+        '''
+            Creates a CelestialSystem of the solar system (up to Jupiter for now)
+        '''
         return cls(name='Solar System', celestial_objects={
             'Sun': GravitationalObject(mass=1, position=[0, 0], velocity=[0, 0])
             , 'Mercury': GravitationalObject(mass=0.0553*M_earth/M_sun, position=[0.39, 0], velocity=[0, 0.39*2*np.pi/0.240846])
@@ -50,6 +59,9 @@ class CelestialSystem():
     
     @classmethod
     def chaotic_three_body(cls):
+        '''
+            Creates a chaotic three body system, where the objects a bound for a sustained amount of time
+        '''
         object1 = GravitationalObject(mass=1, position=[0,0], velocity=[-12*0.5,-12*0.5])
         object2 = GravitationalObject(mass=1, position=[-1.4,0], velocity=[3*0.53,6*0.35])
         object3 = GravitationalObject(mass=1, position=[1.4,0], velocity=[3*0.35,3*0.53])
