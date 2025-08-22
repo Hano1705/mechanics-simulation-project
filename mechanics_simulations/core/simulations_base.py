@@ -28,12 +28,12 @@ class Simulation(ABC):
 
         # local variables for simulation
         time_list = [0]
-        state_list = [self.get_initial_state()]
+        state_list = [self._get_initial_state()]
 
         print("Running simulation")
         while time_list[-1] < simulation_time:
             # update time and state
-            time, state = self._propagator(rhs_func=self.compute_derivatives
+            time, state = self._propagator(rhs_func=self._compute_derivatives
                                       , time=time_list[-1]
                                       , state=state_list[-1]
                                       , timestep=timestep)
@@ -48,11 +48,11 @@ class Simulation(ABC):
         return time, state
     
     @abstractmethod
-    def get_initial_state(self):
+    def _get_initial_state(self):
         '''returns initial state of system. Implemented in subclass'''
         pass
 
     @abstractmethod
-    def compute_derivatives(self):
+    def _compute_derivatives(self):
         '''returns derivatives of the current state. Implemented in subclass'''
         pass

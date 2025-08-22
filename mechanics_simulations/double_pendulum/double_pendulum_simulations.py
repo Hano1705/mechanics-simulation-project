@@ -13,11 +13,11 @@ class PendulumSimulation(Simulation):
         super().__init__(propagator=propagator)
         self.object: Pendulum = pendulum
 
-    def get_initial_state(self):
+    def _get_initial_state(self):
         '''Returns the initial state of the double pendulum'''
         return self.object.state
 
-    def compute_derivatives(self, state: np.ndarray):
+    def _compute_derivatives(self, state: np.ndarray):
         '''
             Computes the derivatives of the current state
         '''
@@ -47,11 +47,11 @@ class DoublePendulumSimulation(Simulation):
         super().__init__(propagator=propagator)
         self.object = double_pendulum
 
-    def get_initial_state(self):
+    def _get_initial_state(self):
         '''Returns the initial state of the double pendulum'''
         return self.object.state
 
-    def compute_derivatives(self, state: np.ndarray):
+    def _compute_derivatives(self, state: np.ndarray):
         '''
             Computes the derivatives of the state variables
         

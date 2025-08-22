@@ -27,7 +27,7 @@ class NBodySimulation(Simulation):
         self.masses = np.fromiter((cel_object.mass for cel_object in system.values()), dtype=np.float32)
         self.gravitational_constant = (4 * np.pi**2) # units of AU = 1, yr = 1
 
-    def get_initial_state(self):
+    def _get_initial_state(self):
         '''
             returns the initial state of the system as a np.array with dimension
             (N, 2, 2) corresponding to N objects, 2 types of properties (positon/velocity)
@@ -39,7 +39,7 @@ class NBodySimulation(Simulation):
         return np.array(_temp, dtype=np.float32) # object, property, coordinate
     
 
-    def compute_derivatives(self, state: np.ndarray):
+    def _compute_derivatives(self, state: np.ndarray):
         '''
             computes the derivatives of the current state and returns it as np.array with
             dimension (N, 2, 2) corresponding to the get_initial_state method.
