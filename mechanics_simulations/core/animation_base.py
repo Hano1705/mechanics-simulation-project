@@ -21,7 +21,7 @@ class Animation(ABC):
             repeat_delay: time between succesive repeats (unit: ms)    
         '''
         # initialize animation
-        self.initialize_animation()
+        self._initialize_animation()
 
         # instantiate animation
         ani = animation.FuncAnimation(fig=self._fig 
@@ -32,7 +32,7 @@ class Animation(ABC):
         plt.show()
 
     @abstractmethod
-    def initialize_animation(self):
+    def _initialize_animation(self):
         '''initializes animation, implemented in subclass'''
         pass
 

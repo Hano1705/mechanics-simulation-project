@@ -18,6 +18,14 @@ class Simulation(ABC):
     @Timer(name='decorator', text= "Simulation elapsed time: {:.4f} seconds")
     def run_simulation(self, simulation_time: float|int, timestep: float):
         '''Runs simulation'''
+
+        if simulation_time <= 0:
+            raise ValueError(f'simulation_time must be greater than 0: {simulation_time}')
+        if timestep <= 0:
+            raise ValueError(f'timestep must be greater than 0: {simulation_time}')
+        if simulation_time < timestep:
+            raise ValueError(f'timestep ({timestep}) must be less than simulation_time ({simulation_time})')
+
         # local variables for simulation
         time_list = [0]
         state_list = [self.get_initial_state()]

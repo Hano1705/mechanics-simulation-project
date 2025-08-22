@@ -17,7 +17,7 @@ class NBodyAnimation(Animation):
         super().__init__(simulation=simulation)
         self._simulation = simulation
 
-    def initialize_animation(self):
+    def _initialize_animation(self):
         '''
             Initializes the animation
         '''
@@ -34,9 +34,9 @@ class NBodyAnimation(Animation):
         self._ax.set_ylabel('y (AU)')
 
         # set axes
-        origin = np.sum(self._simulation.masses[:,np.newaxis]*self._positions[0,:,:], axis=0) / np.sum(self._simulation.masses)
-        self._ax.set_xlim(-6 + origin[0], 6 + origin[0])
-        self._ax.set_ylim(-6 + origin[1], 6 + origin[1])
+        center_of_mass = np.sum(self._simulation.masses[:,np.newaxis]*self._positions[0,:,:], axis=0) / np.sum(self._simulation.masses)
+        self._ax.set_xlim(-6 + center_of_mass[0], 6 + center_of_mass[0])
+        self._ax.set_ylim(-6 + center_of_mass[1], 6 + center_of_mass[1])
 
         self._point_artists = {}
         self._trace_artists = {}
@@ -51,7 +51,7 @@ class NBodyAnimation(Animation):
         self._text_artist = self._ax.text(0.1, 0.9, s=f"t = {self._t[0]:.1f} yr"
                               , transform=self._ax.transAxes
                               , bbox={'facecolor':'green','alpha':0.2})
-        self._ax.legend(bbox_to_anchor=(1.3, 1))
+        self._ax.legend(bbox_to_anchor=(1.35, 1))
             
 
     def _update_frame(self, frame):

@@ -39,11 +39,19 @@ class CelestialSystem():
     @classmethod
     def solar_system(cls):
         return cls(name='Solar System', celestial_objects={
-        'Sun': GravitationalObject(mass=1, position=[0, 0], velocity=[0, 0])
-        , 'Mercury': GravitationalObject(mass=0.0553*M_earth/M_sun, position=[0.39, 0], velocity=[0, 0.39*2*np.pi/0.240846])
-        , 'Venus': GravitationalObject(mass=0.815*M_earth/M_sun, position=[0.72, 0], velocity=[0, 0.72*2*np.pi/0.615])
-        , 'Earth': GravitationalObject(mass=M_earth/M_sun, position=[1, 0], velocity=[0, 2*np.pi])
-        , 'Mars': GravitationalObject(mass=0.1075*M_earth/M_sun, position=[1.52, 0], velocity=[0, 1.52*2*np.pi/1.881])
-        , 'Jupiter': GravitationalObject(mass=317.8*M_earth/M_sun, position=[5.2, 0], velocity=[0, 5.2*2*np.pi/11.86])
+            'Sun': GravitationalObject(mass=1, position=[0, 0], velocity=[0, 0])
+            , 'Mercury': GravitationalObject(mass=0.0553*M_earth/M_sun, position=[0.39, 0], velocity=[0, 0.39*2*np.pi/0.240846])
+            , 'Venus': GravitationalObject(mass=0.815*M_earth/M_sun, position=[0.72, 0], velocity=[0, 0.72*2*np.pi/0.615])
+            , 'Earth': GravitationalObject(mass=M_earth/M_sun, position=[1, 0], velocity=[0, 2*np.pi])
+            , 'Mars': GravitationalObject(mass=0.1075*M_earth/M_sun, position=[1.52, 0], velocity=[0, 1.52*2*np.pi/1.881])
+            , 'Jupiter': GravitationalObject(mass=317.8*M_earth/M_sun, position=[5.2, 0], velocity=[0, 5.2*2*np.pi/11.86])
         })
         print('Created the solar system')
+    
+    @classmethod
+    def chaotic_three_body(cls):
+        object1 = GravitationalObject(mass=1, position=[0,0], velocity=[-12*0.5,-12*0.5])
+        object2 = GravitationalObject(mass=1, position=[-1.4,0], velocity=[3*0.53,6*0.35])
+        object3 = GravitationalObject(mass=1, position=[1.4,0], velocity=[3*0.35,3*0.53])
+
+        return cls(name='Chaotic three body system', celestial_objects={'object1': object1,'object2': object2,'object3': object3})
