@@ -7,7 +7,7 @@ from astropy.constants import M_sun, M_earth # type:ignore
 class GravitationalObject():
     '''A single graviational object'''
 
-    def __init__(self, mass: float, position: list[float], velocity: list[float]):
+    def __init__(self, mass: float, position: list, velocity: list):
         self.mass = mass
         self.position = position # [x, y]
         self.velocity = velocity # [vx, vy]
