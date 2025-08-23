@@ -16,7 +16,7 @@ class Simulation(ABC):
     @Timer(name='decorator', text= "Simulation elapsed time: {:.4f} seconds")
     def run_simulation(self, simulation_time: float|int, timestep: float):
         '''Runs simulation'''
-        # check input arguments
+        # check for argument validity
         if simulation_time <= 0:
             raise ValueError(f'simulation_time must be greater than 0: {simulation_time}')
         if timestep <= 0:
@@ -24,19 +24,8 @@ class Simulation(ABC):
         if simulation_time < timestep:
             raise ValueError(f'timestep ({timestep}) must be less than simulation_time ({simulation_time})')
 
-        # ensure correct state and derivative types and shapes
-        if not isinstance(self._get_initial_state(), np.ndarray):
-            raise TypeError(f'._get_initial_state must return {np.ndarray}, but returned {type(self._get_initial_state())}.')
-        if not isinstance(self._compute_derivatives(self._get_initial_state()), np.ndarray):
-            raise TypeError(f'._compute_derivatives must return {np.ndarray}, but returned {type(self._compute_derivatives(self._get_initial_state()))}.')
-        if not self._get_initial_state().shape == self._compute_derivatives(self._get_initial_state()).shape:
-            raise ValueError(f'._compute_derivatives and ._get_initial_state must return arrays of equivalent dimension.')
-        
-        # ensure correct propagated state type and shape
-        if not isinstance(self._propagate_once(self._get_initial_state(), timestep), np.ndarray):
-            raise TypeError(f'_propagate_once must return {np.ndarray}, but returned {type(self._propagate_once(self._get_initial_state(), timestep ))}')
-        if not self._propagate_once(self._get_initial_state(), timestep).shape == self._get_initial_state().shape:
-            raise ValueError(f'._propagate_once and ._get_initial_state must return arrays of equivalent dimension.')
+        # checks for error in simulator method outputs
+        self._runtime_error_checker()
 
         # local variables for simulation
         time_list = [0.0]
@@ -69,3 +58,24 @@ class Simulation(ABC):
     @abstractmethod
     def _propagate_once(self, state: np.ndarray, timestep: float | int)-> np.ndarray:
         pass
+
+    def _runtime_error_checker(self):
+        '''
+            checks for errors in the returned objects of the three abstract methods. 
+        '''
+        # ensure correct state and derivative types and shapes
+        if not isinstance(self._get_initial_state(), np.ndarray):
+            raise TypeError(f'._get_initial_state must return {np.ndarray}, but returned {type(self._get_initial_state())}.')
+        if not isinstance(self._compute_derivatives(self._get_initial_state()), np.ndarray):
+            raise TypeError(f'._compute_derivatives must return {np.ndarray}, but returned {type(self._compute_derivatives(self._get_initial_state()))}.')
+        if not self._get_initial_state().shape == self._compute_derivatives(self._get_initial_state()).shape:
+            raise ValueError(f'._compute_derivatives and ._get_initial_state must return arrays of equivalent dimension.')
+        
+        # ensure correct propagated state type and shape
+        mock_timestep = 0.01
+        if not isinstance(self._propagate_once(self._get_initial_state(), mock_timestep), np.ndarray):
+            raise TypeError(f'_propagate_once must return {np.ndarray}, but returned {type(self._propagate_once(self._get_initial_state(), mock_timestep))}')
+        if not self._propagate_once(self._get_initial_state(), mock_timestep).shape == self._get_initial_state().shape:
+            raise ValueError(f'._propagate_once and ._get_initial_state must return arrays of equivalent dimension.')
+        
+        return None
