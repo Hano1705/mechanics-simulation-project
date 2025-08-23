@@ -1,6 +1,6 @@
 import numpy as np
 from numba import jit
-from scipy.constants import G
+from functools import partial
 
 from mechanics_simulations import Simulation
 from mechanics_simulations import RK4Integrator
@@ -13,21 +13,22 @@ class NBodySimulation(Simulation):
         N-body simulation class. Takes a dictionary of GravitationalObjects and a propagator,
         and runs the evolution of the system of GravitationalObjects for a given amount of time.
     '''
-    def __init__(self, system: CelestialSystem, propagator):
+    def __init__(self, system: CelestialSystem):
         '''
             Initialize the N-body simulation.
 
             Parameters:
-            objects: list of gravitational objects in simulation
-            propagator: integrator
+            system: CelstialSystem object
         '''
-        super().__init__(propagator=propagator)
+        # set default propagator for the NBody simulation
+        self._propagator = partial(RK4Integrator().propagate_state, rhs_func=self._compute_derivatives) # type: ignore
 
+        # define variables for the physical parameters
         self.system = system.get_system()
         self.masses = np.fromiter((cel_object.mass for cel_object in self.system.values()), dtype=np.float32)
         self.gravitational_constant = system.gravitational_constant # units of AU = 1, yr = 1
 
-    def _get_initial_state(self):
+    def _get_initial_state(self) -> np.ndarray:
         '''
             returns the initial state of the system as a np.array with dimension
             (N, 2, 2) corresponding to N objects, 2 types of properties (positon/velocity)
@@ -38,7 +39,7 @@ class NBodySimulation(Simulation):
         return np.array(_temp, dtype=np.float32) # object, property, coordinate
     
 
-    def _compute_derivatives(self, state: np.ndarray):
+    def _compute_derivatives(self, state: np.ndarray) -> np.ndarray:
         '''
             computes the derivatives of the current state and returns it as np.array with
             dimension (N, 2, 2) corresponding to the get_initial_state method.
@@ -68,3 +69,14 @@ class NBodySimulation(Simulation):
 
         # return numpy array in same format as original state
         return np.transpose(np.array([pos_derivatives,vel_derivatives]), (1,0,2))
+    
+    def _propagate_once(self, state: np.ndarray, timestep: float | int) -> np.ndarray:
+        '''
+            calculates the state of the system at the next timestep, given the timestep and the current step
+        '''
+        return self._propagator(state=state, timestep=timestep) # type: ignore
+    
+    def set_propagator(self, propagator):
+
+        self._propagator = propagator
+        return None

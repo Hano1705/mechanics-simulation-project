@@ -11,9 +11,7 @@ class RK4Integrator():
     def __init__(self):
         pass
 
-    def propagate_state(self, rhs_func: FunctionType 
-                       , time: float, state: np.ndarray 
-                       , timestep: float) -> tuple:
+    def propagate_state(self, rhs_func: FunctionType, state: np.ndarray, timestep: float) -> tuple:
         '''
             method for propagating a newtonian particle.
             
@@ -35,8 +33,6 @@ class RK4Integrator():
         k2 = rhs_func(state + timestep * k1/2)
         k3 = rhs_func(state + timestep * k2/2)
         k4 = rhs_func(state + timestep * k3)
-        # final state
-        state = state + timestep/6 * (k1 + 2*k2 + 2*k3 + k4)
-        time = time + timestep
-
-        return time, state
+        
+        # return new state
+        return state + timestep/6 * (k1 + 2*k2 + 2*k3 + k4)
