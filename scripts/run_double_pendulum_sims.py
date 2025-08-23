@@ -1,6 +1,5 @@
 import numpy as np
 
-from mechanics_simulations.core.integrators import RK4Integrator
 from mechanics_simulations.double_pendulum.pendulum_objects import Pendulum
 from mechanics_simulations.double_pendulum.pendulum_objects import DoublePendulum
 from mechanics_simulations.double_pendulum.double_pendulum_simulations import PendulumSimulation
@@ -13,10 +12,8 @@ def _animate_pendulum():
     pendulum = Pendulum(mass=1, length=1, origin=[0,0])
     pendulum.set_pendulum(theta=np.pi/2, w=0)
     print("pendulum instantiated")
-    
-    rk_solver = RK4Integrator()
 
-    my_simulation = PendulumSimulation(pendulum=pendulum, propagator=rk_solver.propagate_state)
+    my_simulation = PendulumSimulation(pendulum=pendulum)
     my_simulation.run_simulation(simulation_time=10, timestep=0.01)
     print('finished simulation')
     my_animation = PendulumAnimation(simulation = my_simulation)
@@ -33,12 +30,11 @@ def _animate_double_pendulum():
                                        theta2=-np.pi/4, w2=0)
     print("double pendulum instantiated")
     
-    rk_solver = RK4Integrator()
-
-    my_simulation = DoublePendulumSimulation(double_pendulum=double_pendulum, propagator=rk_solver.propagate_state)
+    my_simulation = DoublePendulumSimulation(double_pendulum=double_pendulum)
     my_simulation.run_simulation(simulation_time=100, timestep=0.01)
     my_simulation.calculate_cartesian_coordinates()
     print('finished simulation')
+
     my_animation = DoublePendulumAnimation(simulation = my_simulation)
     my_animation.show_animation(interval_frames=20, repeat_delay=1000)
     print('finished animation')

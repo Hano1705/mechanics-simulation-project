@@ -1,4 +1,5 @@
 import numpy as np
+from functools import partial
 
 from mechanics_simulations.double_pendulum.pendulum_objects import Pendulum
 from mechanics_simulations.double_pendulum.pendulum_objects import DoublePendulum
@@ -9,8 +10,8 @@ from mechanics_simulations import RK4Integrator
 class PendulumSimulation(Simulation):
     '''A subclass of the simulator class'''
     
-    def __init__(self, pendulum: Pendulum, propagator):
-        super().__init__(propagator=propagator)
+    def __init__(self, pendulum: Pendulum):
+        self._propagator = partial(RK4Integrator().propagate_state, rhs_func=self._compute_derivatives) # type: ignore
         self.object: Pendulum = pendulum
 
     def _get_initial_state(self):
@@ -30,6 +31,12 @@ class PendulumSimulation(Simulation):
         return np.array([theta_derivative, w_derivative]
                          , dtype=np.float32)
     
+    def _propagate_once(self, state: np.ndarray, timestep: float | int) -> np.ndarray:
+        '''
+            calculates the state of the system at the next timestep, given the timestep and the current step
+        '''
+        return self._propagator(state=state, timestep=timestep) # type: ignore
+    
     def calculate_cartesian_coordinates(self):
 
         theta, w = self.state.transpose()
@@ -43,8 +50,8 @@ class PendulumSimulation(Simulation):
 class DoublePendulumSimulation(Simulation):
     '''A subclass of the simulation class'''
     
-    def __init__(self, double_pendulum: DoublePendulum, propagator):
-        super().__init__(propagator=propagator)
+    def __init__(self, double_pendulum: DoublePendulum):
+        self._propagator = partial(RK4Integrator().propagate_state, rhs_func=self._compute_derivatives) # type: ignore
         self.object = double_pendulum
 
     def _get_initial_state(self):
@@ -86,6 +93,12 @@ class DoublePendulumSimulation(Simulation):
 
         return np.array([deriv_theta1, deriv_theta2, deriv_w1, deriv_w2]
                         , dtype=np.float32)
+    
+    def _propagate_once(self, state: np.ndarray, timestep: float | int) -> np.ndarray:
+        '''
+            calculates the state of the system at the next timestep, given the timestep and the current step
+        '''
+        return self._propagator(state=state, timestep=timestep) # type: ignore
     
     def calculate_cartesian_coordinates(self):
 
