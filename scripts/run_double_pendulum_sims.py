@@ -40,4 +40,5 @@ def _animate_double_pendulum():
     print('finished animation')
 
 if __name__ == '__main__':
-    _animate_double_pendulum()
+   # _animate_double_pendulum()
+    _animate_pendulum()

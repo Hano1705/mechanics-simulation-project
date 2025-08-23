@@ -16,7 +16,7 @@ class PendulumSimulation(Simulation):
 
     def _get_initial_state(self):
         '''Returns the initial state of the double pendulum'''
-        return self.object.state
+        return np.array(self.object.state)
 
     def _compute_derivatives(self, state: np.ndarray):
         '''
