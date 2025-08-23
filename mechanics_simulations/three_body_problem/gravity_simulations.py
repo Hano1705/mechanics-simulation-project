@@ -32,7 +32,6 @@ class NBodySimulation(Simulation):
             returns the initial state of the system as a np.array with dimension
             (N, 2, 2) corresponding to N objects, 2 types of properties (positon/velocity)
             and 2 coordinates.
-
         '''
         _temp = [[cel_object.position, cel_object.velocity] for cel_object in self.system.values()]
 
