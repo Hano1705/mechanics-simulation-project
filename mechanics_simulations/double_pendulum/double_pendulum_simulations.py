@@ -41,8 +41,8 @@ class PendulumSimulation(Simulation):
         '''
             Sets the default propagator for the simulation, which incorporates the _compute_derivatives method
         '''
-        propagator=RK4Integrator().propagate_state
-        self._propagator = partial(propagator, rhs_func=self._compute_derivatives) # type:ignore
+        propagator=RK4Integrator().integrate_state
+        self._propagator = partial(propagator, derivative_func=self._compute_derivatives) # type:ignore
         return None
     
     def calculate_cartesian_coordinates(self):
@@ -112,8 +112,8 @@ class DoublePendulumSimulation(Simulation):
         '''
             Sets the default propagator for the simulation, which incorporates the _compute_derivatives method
         '''
-        propagator=RK4Integrator().propagate_state
-        self._propagator = partial(propagator, rhs_func=self._compute_derivatives) # type:ignore
+        propagator=RK4Integrator().integrate_state
+        self._propagator = partial(propagator, derivative_func=self._compute_derivatives) # type:ignore
         return None
     
     def calculate_cartesian_coordinates(self):

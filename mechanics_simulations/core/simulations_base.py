@@ -10,12 +10,20 @@ class Simulation(ABC):
     '''
         A simulator base class
     '''
-    def __init__(self):
-        pass
-    
-    @Timer(name='decorator', text= "Simulation elapsed time: {:.4f} seconds")
-    def run_simulation(self, simulation_time: float|int, timestep: float):
-        '''Runs simulation'''
+
+    @Timer(name='decorator', text= "Finished simulation. Elapsed time: {:.4f} seconds")
+    def run_simulation(self, simulation_time: float|int, timestep: float) -> tuple[np.ndarray,np.ndarray]:
+        '''
+            Run the simulation. This method depends on the ._get_initial_state() and ._propagate_once() methods,
+            and checks whether the return values of theses methods are compatible and of the correct type.
+
+            Parameters:
+            simulation_time: the duration of the simulation (depends on physical units chosen)
+            timestep: the duration between succesive simulated states.
+
+            Returns:
+            tuple of time and state at each point in time.
+        '''
         # check for argument validity
         if simulation_time <= 0:
             raise ValueError(f'simulation_time must be greater than 0: {simulation_time}')
@@ -38,8 +46,7 @@ class Simulation(ABC):
             # append results to result lists
             time_list.append(time_list[-1]+timestep)
             state_list.append(state)
-        
-        print("Finished simulation")
+    
         self.time = np.array(time_list)
         self.state = np.array(state_list)
 
@@ -52,6 +59,7 @@ class Simulation(ABC):
 
     @abstractmethod
     def _propagate_once(self, state: np.ndarray, timestep: float | int)-> np.ndarray:
+        '''propagates state one timestep. Implemented in subclass'''
         pass
 
     def _runtime_error_checker(self):

@@ -1,11 +1,8 @@
 import numpy as np
-from astropy.constants import M_sun, M_earth, au, G # type: ignore
 
-from mechanics_simulations import Animation
-from mechanics_simulations import Simulation
+from mechanics_simulations import Animation, Simulation
 
-from mechanics_simulations.n_body_problem.gravity_object import GravitationalObject,CelestialSystem
-
+from mechanics_simulations.n_body_problem.gravity_object import GravitationalObject, CelestialSystem
 from mechanics_simulations.n_body_problem.gravity_simulations import NBodySimulation
 from mechanics_simulations.n_body_problem.gravity_animations import NBodyAnimation
 
