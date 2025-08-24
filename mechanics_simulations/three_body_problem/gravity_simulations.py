@@ -21,12 +21,12 @@ class NBodySimulation(Simulation):
             system: CelstialSystem object
         '''
         # set default propagator for the NBody simulation
-        self._propagator = partial(RK4Integrator().propagate_state, rhs_func=self._compute_derivatives) # type: ignore
+        self._set_default_propagator()
 
         # define variables for the physical parameters
         self.system = system.get_system()
         self.masses = np.fromiter((cel_object.mass for cel_object in self.system.values()), dtype=np.float32)
-        self.gravitational_constant = system.gravitational_constant # units of AU = 1, yr = 1
+        self.gravitational_constant = system.gravitational_constant
 
     def _get_initial_state(self) -> np.ndarray:
         '''
@@ -38,6 +38,19 @@ class NBodySimulation(Simulation):
 
         return np.array(_temp, dtype=np.float32) # object, property, coordinate
     
+    def _propagate_once(self, state: np.ndarray, timestep: float | int) -> np.ndarray:
+        '''
+            calculates the state of the system at the next timestep, given the timestep and the current step
+        '''
+        return self._propagator(state=state, timestep=timestep) # type:ignore
+
+    def _set_default_propagator(self):
+        '''
+            Sets the default propagator for the simulation, which incorporates the _compute_derivatives method
+        '''
+        propagator=RK4Integrator().propagate_state
+        self._propagator = partial(propagator, rhs_func=self._compute_derivatives) # type:ignore
+        return None
 
     def _compute_derivatives(self, state: np.ndarray) -> np.ndarray:
         '''
@@ -69,14 +82,23 @@ class NBodySimulation(Simulation):
 
         # return numpy array in same format as original state
         return np.transpose(np.array([pos_derivatives,vel_derivatives]), (1,0,2))
-    
-    def _propagate_once(self, state: np.ndarray, timestep: float | int) -> np.ndarray:
-        '''
-            calculates the state of the system at the next timestep, given the timestep and the current step
-        '''
-        return self._propagator(state=state, timestep=timestep) # type: ignore
-    
-    def set_propagator(self, propagator):
 
+    def set_propagator(self, propagator):
+        '''
+            Sets the user defined propagator for the simulation.
+
+            parameters:
+            propagator: the chosen propagator for the simulation.
+        '''
         self._propagator = propagator
         return None
+    
+    def _runtime_propagator_checker(self):
+        
+        if not isinstance(self._compute_derivatives(self._get_initial_state()), np.ndarray):
+            raise TypeError(f'._compute_derivatives must return {np.ndarray}, but returned {type(self._compute_derivatives(self._get_initial_state()))}.')
+        if not self._get_initial_state().shape == self._compute_derivatives(self._get_initial_state()).shape:
+            raise ValueError(f'._compute_derivatives and ._get_initial_state must return arrays of equivalent dimension.')
+        
+        return None
+    

@@ -11,7 +11,7 @@ class PendulumSimulation(Simulation):
     '''A subclass of the simulator class'''
     
     def __init__(self, pendulum: Pendulum):
-        self._propagator = partial(RK4Integrator().propagate_state, rhs_func=self._compute_derivatives) # type: ignore
+        self._set_default_propagator()
         self.object: Pendulum = pendulum
 
     def _get_initial_state(self):
@@ -37,6 +37,14 @@ class PendulumSimulation(Simulation):
         '''
         return self._propagator(state=state, timestep=timestep) # type: ignore
     
+    def _set_default_propagator(self):
+        '''
+            Sets the default propagator for the simulation, which incorporates the _compute_derivatives method
+        '''
+        propagator=RK4Integrator().propagate_state
+        self._propagator = partial(propagator, rhs_func=self._compute_derivatives) # type:ignore
+        return None
+    
     def calculate_cartesian_coordinates(self):
 
         theta, w = self.state.transpose()
@@ -51,7 +59,7 @@ class DoublePendulumSimulation(Simulation):
     '''A subclass of the simulation class'''
     
     def __init__(self, double_pendulum: DoublePendulum):
-        self._propagator = partial(RK4Integrator().propagate_state, rhs_func=self._compute_derivatives) # type: ignore
+        self._set_default_propagator()
         self.object = double_pendulum
 
     def _get_initial_state(self):
@@ -99,6 +107,14 @@ class DoublePendulumSimulation(Simulation):
             calculates the state of the system at the next timestep, given the timestep and the current step
         '''
         return self._propagator(state=state, timestep=timestep) # type: ignore
+    
+    def _set_default_propagator(self):
+        '''
+            Sets the default propagator for the simulation, which incorporates the _compute_derivatives method
+        '''
+        propagator=RK4Integrator().propagate_state
+        self._propagator = partial(propagator, rhs_func=self._compute_derivatives) # type:ignore
+        return None
     
     def calculate_cartesian_coordinates(self):
 

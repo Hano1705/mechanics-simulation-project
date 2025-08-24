@@ -8,7 +8,7 @@ from codetiming import Timer
 
 class Simulation(ABC):
     '''
-        A simulator class
+        A simulator base class
     '''
     def __init__(self):
         pass
@@ -51,11 +51,6 @@ class Simulation(ABC):
         pass
 
     @abstractmethod
-    def _compute_derivatives(self, state: np.ndarray) -> np.ndarray:
-        '''returns derivatives of the current state. Implemented in subclass'''
-        pass
-
-    @abstractmethod
     def _propagate_once(self, state: np.ndarray, timestep: float | int)-> np.ndarray:
         pass
 
@@ -66,10 +61,6 @@ class Simulation(ABC):
         # ensure correct state and derivative types and shapes
         if not isinstance(self._get_initial_state(), np.ndarray):
             raise TypeError(f'._get_initial_state must return {np.ndarray}, but returned {type(self._get_initial_state())}.')
-        if not isinstance(self._compute_derivatives(self._get_initial_state()), np.ndarray):
-            raise TypeError(f'._compute_derivatives must return {np.ndarray}, but returned {type(self._compute_derivatives(self._get_initial_state()))}.')
-        if not self._get_initial_state().shape == self._compute_derivatives(self._get_initial_state()).shape:
-            raise ValueError(f'._compute_derivatives and ._get_initial_state must return arrays of equivalent dimension.')
         
         # ensure correct propagated state type and shape
         mock_timestep = 0.01
