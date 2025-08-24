@@ -2,19 +2,16 @@ import unittest
 import numpy as np
 from astropy.constants import M_sun, M_earth # type:ignore
 
-from mechanics_simulations import RK4Integrator
-
-from mechanics_simulations.three_body_problem.gravity_object import GravitationalObject, CelestialSystem
-from mechanics_simulations.three_body_problem.gravity_simulations import  NBodySimulation
+from mechanics_simulations.n_body_problem.gravity_object import GravitationalObject, CelestialSystem
+from mechanics_simulations.n_body_problem.gravity_simulations import  NBodySimulation
 
 class TestGravitySimulationInit(unittest.TestCase):
     '''
         tests constructor, that masses of input system are interpreted correctly by simulator,
         and that the initial positions are interpreted correct
     '''
-    propagator = RK4Integrator()
     test_system = CelestialSystem.solar_system()
-    test_sim = NBodySimulation(system=test_system.get_system(), propagator=propagator.propagate_state)
+    test_sim = NBodySimulation(system=test_system)
 
     def test_run_simulation_invalid_arguments(self):
         '''Tests exceptions raised with invalid input arguments to .run_simulation() method'''
@@ -57,8 +54,6 @@ class GravitySimulationsPhysicsTests(unittest.TestCase):
         '''
             Tests Newtonian force for two objects of different masses and different positions
         '''
-        propagator = RK4Integrator()
-
         # testcases
         test_masses = ((1, 1),
                         (1, 1),
@@ -93,7 +88,7 @@ class GravitySimulationsPhysicsTests(unittest.TestCase):
                 name = f'object{it}'
                 test_system.add_object(name=name, object=object)
 
-            test_sim = NBodySimulation(system=test_system.get_system(), propagator=propagator.propagate_state)
+            test_sim = NBodySimulation(system=test_system)
 
             # test case
             expected_result = np.array(forces, dtype=np.float32)
