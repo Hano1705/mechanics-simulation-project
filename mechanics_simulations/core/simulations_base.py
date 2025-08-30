@@ -40,7 +40,7 @@ class Simulation(ABC):
         state_list = [self._get_initial_state()]
 
         print("Running simulation")
-        while time_list[-1] < simulation_time:
+        while round(time_list[-1], 10) < simulation_time:
             # update time and state
             state = self._propagate_once(state=state_list[-1], timestep=timestep)
             # append results to result lists

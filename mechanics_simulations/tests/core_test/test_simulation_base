@@ -1,0 +1,63 @@
+# test for Simulation base class
+
+import numpy as np
+import unittest
+
+from mechanics_simulations import Simulation
+
+class TestSimulationCore(unittest.TestCase):
+    '''test class for Simulation abc'''
+
+    def test_argument_exceptions(self):
+        ''' Tests to see if bad argument values raise exceptions'''
+        class MockSimulation(Simulation):
+            '''Mock simulation to support abstract methods'''
+            def _get_initial_state(self) -> np.ndarray:
+                return np.array([[1,0],[0,1]])
+
+            def _propagate_once(self, state: np.ndarray, timestep: float | int) -> np.ndarray:
+                return 2 * state 
+
+        test_sim = MockSimulation()
+
+        with self.assertRaises(ValueError):
+            test_sim.run_simulation(simulation_time = -1, timestep = 0.01)
+        with self.assertRaises(ValueError):
+            test_sim.run_simulation(simulation_time = 1, timestep = -0.01)
+        with self.assertRaises(ValueError):
+            test_sim.run_simulation(simulation_time = 0.5, timestep = 1)
+
+    def test_run_simulation(self):
+        '''
+            Tests to check the simulation runs produces the correct state and time series,
+            given a very simple state propagator.
+        '''
+        class MockSimulation(Simulation):
+            '''Mock simulation to support abstract methods'''
+            def _get_initial_state(self) -> np.ndarray:
+                return np.array([[1,0],[0,1]])
+
+            def _propagate_once(self, state: np.ndarray, timestep: float | int) -> np.ndarray:
+                return 2 * state 
+            
+        test_sim = MockSimulation()
+
+        test_sim.run_simulation(simulation_time=0.9, timestep=0.3)
+
+        expected_result = np.array([[[1,0],[0,1]]
+                                    ,[[2,0],[0,2]]
+                                    ,[[4,0],[0,4]]
+                                    ,[[8,0],[0,8]]])
+        expected_times = np.array([0.0, 0.3, 0.6, 0.9])
+
+        self.assertIsInstance(test_sim.state, np.ndarray)
+        self.assertIsInstance(test_sim.time, np.ndarray)
+        self.assertTrue((expected_result == test_sim.state).all())
+        self.assertTrue(np.allclose(expected_times, test_sim.time, 10))
+
+if __name__ == '__main__':
+    unittest.main(verbosity=1)
+        
+
+
+    

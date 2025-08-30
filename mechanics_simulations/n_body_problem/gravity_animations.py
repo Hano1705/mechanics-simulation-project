@@ -69,4 +69,6 @@ class NBodyAnimation(Animation):
 
         self._ax.set_xlim(-width*1.5 + center_of_mass[0], width*1.5 + center_of_mass[0])
         self._ax.set_ylim(-width*1.5 + center_of_mass[1], width*1.5 + center_of_mass[1])
+                
+        return (*[p_art for p_art in self._point_artists.values()],*[t_art for t_art in self._trace_artists.values()], self._text_artist)
             
