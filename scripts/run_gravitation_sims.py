@@ -40,4 +40,3 @@ if __name__== '__main__':
     run_solar_system_sim()
     # run_chaotic_three_body_sim()
     # run_figure_eight_sim()
-    x = 1+2
